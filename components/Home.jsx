@@ -51,14 +51,28 @@ const Home = ({navigation}) => {
     return null;
   }
   return (
-    <View>
-      <Text>Name: {name}</Text>
-      <Text>Email: {email}</Text>
-      <Pressable onPress={() => LogoutHandle()}><Text>Logout</Text></Pressable>
+    <View style={{ flex: 1}}>
+      <View style={{flex: 1}}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Welcome Back, {name}!!!!</Text>
+      {/* <Text>Email: {email}</Text> */}
+      </View >
+      <View style={{justifyContent: 'flex-end',flex: 1, alignItems: 'center', margin: 10}}>
+      <Pressable onPress={() => LogoutHandle()} style={styles.btn}><Text>Logout</Text></Pressable>
+      </View>
     </View>
   )
 }
 
 export default Home
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  btn: {
+    height: 50,
+    width: '50%',
+    backgroundColor: 'red',
+    marginTop: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+}
+})

@@ -1,4 +1,4 @@
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
 import { Formik } from 'formik'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -58,11 +58,17 @@ const FormikLogin = ({ navigation }) => {
 
   return (
     <ScrollView>
-      <SafeAreaView >
+     
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Hello there,Lets get started</Text>
+        <View style={{justifyContent: 'flex-start',alignItems: 'center'}}>
+            <Image source={require('./LoginSignupBackgroundNobg.png')} style={styles.image}></Image>
+            </View>
+            <View style={{justifyContent: 'center', width: '88%'}}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold',marginBottom: 15,color: '#5D3FD3' }}>Hello there,Lets get started!!!</Text>
+            </View>
+          
           <Formik
-            initialValues={{ name: '', email: '', password: '', confirmpassword: '' }}
+            initialValues={{ name: '', email: '' , password: '', confirmpassword: '' }}
             validationSchema={SignupValidationSchema}
             onSubmit={(values) => {
               console.log(values)
@@ -105,7 +111,7 @@ const FormikLogin = ({ navigation }) => {
             )}
           </Formik>
         </View>
-      </SafeAreaView>
+      
     </ScrollView>
   )
 }
@@ -131,5 +137,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  image: {
+    height: 300,
+    width: 300,
+},
 })

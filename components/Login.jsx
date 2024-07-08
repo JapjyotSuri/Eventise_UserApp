@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, TextInput, Alert, Image } from 'react-native'
+import { Pressable, StyleSheet, Text, View, TextInput, Alert, Image, ImageBackground, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import auth, { firebase } from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
@@ -13,8 +13,10 @@ const Login = ({ navigation }) => {
         try {
             const currentUser = await auth().signInWithEmailAndPassword(values.email, values.password);
             const user = currentUser.user;
+            console.log(user);
             const data = await firestore().collection('users').doc(user.uid).get();
-            console.log(data._data);
+
+            console.log(data);
             AsyncStorage.setItem('KeepLoggedIn', JSON.stringify(true))
             AsyncStorage.setItem('Token', JSON.stringify(data._data))
             Alert.alert("Logged in succesfully")
@@ -73,8 +75,13 @@ const Login = ({ navigation }) => {
 
     return (
 
-        <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex: 1 ,}}>
+            <View style={{justifyContent: 'flex-start',alignItems: 'center'}}>
+            <Image source={require('./LoginSignupBackgroundNobg.png')} style={styles.image}></Image>
+            </View>
+            <Text style={{ fontSize: 25, fontWeight: 'bold',color: '#5D3FD3',marginLeft: 20, marginBottom: 10}}>Welcome back!!!!</Text>
             
+             <View style={{flex: 1,}}> 
             <Formik
                 initialValues={{ email: '', password: '' }}
 
@@ -92,7 +99,7 @@ const Login = ({ navigation }) => {
                     handleSubmit,
 
                 }) => (
-                    <View style={{justifyContent: 'center',alignItems: 'center'}}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: '100%',}}>
 
                         <View>
                             <TextInput style={styles.input} placeholder='Email' value={values.email} onChangeText={handleChange('email')} />
@@ -102,26 +109,35 @@ const Login = ({ navigation }) => {
                             <TextInput style={styles.input} placeholder='Password' value={values.password} onChangeText={handleChange('password')} secureTextEntry={true} />
                         </View>
 
-                        <View>
-                            <Pressable style={styles.btn} onPress={handleSubmit}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold' }}>Login</Text></Pressable>
+                        <View style={{ width: '100%' ,marginLeft: 50}}>
                             <View style={{ flexDirection: 'row', marginTop: 10 }}>
                                 <Text>forgot password? </Text>
-                                <Pressable onPress={() => resetPassword(values)}><Text style={{ color: '#5D3FD3' }}>reset password</Text></Pressable>
+                                <Pressable onPress={() => resetPassword(values)}><Text style={{ color: '#5D3FD3' } }>reset password</Text></Pressable>
                             </View>
-                            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                            <Pressable style={styles.btn} onPress={handleSubmit}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold' }}>Login</Text></Pressable>
+
+                            <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                                 <Text>Don't have an account? </Text>
                                 <Pressable onPress={() => navigation.navigate('Signup')}><Text style={{ color: '#5D3FD3' }}>Signup</Text></Pressable>
                             </View>
-                            
-                            <Pressable onPress={onGoogleButtonPress}><Text style={{ color: '#5D3FD3' }}>Sign in with google</Text></Pressable>
+                            <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginVertical: 5 }}>
+                                
+                            </View>
+                            <Pressable onPress={onGoogleButtonPress} style={styles.btn}>
+                                <View style={{flex: 1,flexDirection: 'row',justifyContent: 'center', alignItems: 'center' , gap: 15}}>
+                                <Image source={require('./googleLogin.png')} style={{height: 25,width: 25}}></Image>
+                                <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>Log in with Google</Text>
+                                </View>
+                                </Pressable>
                         </View>
                     </View>
                 )}
             </Formik>
+            </View>
         </View>
 
 
-
+        //Code written using normal form 
         // <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', height: '80%' }}>
         //   <View >
         //     <TextInput style={styles.input} placeholder='Email' value={email} onChangeText={setEmail} />
@@ -157,10 +173,17 @@ const styles = StyleSheet.create({
     },
     btn: {
         height: 50,
+        width: 350,
         backgroundColor: '#5D3FD3',
         marginTop: 10,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+    image: {
+        height: 340,
+        width: 340,
+    },
+    
+   
 })

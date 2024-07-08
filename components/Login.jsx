@@ -114,7 +114,7 @@ const Login = ({ navigation }) => {
                                 <Text>forgot password? </Text>
                                 <Pressable onPress={() => resetPassword(values)}><Text style={{ color: '#5D3FD3' } }>reset password</Text></Pressable>
                             </View>
-                            <Pressable style={styles.btn} onPress={handleSubmit}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold' }}>Login</Text></Pressable>
+                            <Pressable style={styles.btn} onPress={handleSubmit}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>Login</Text></Pressable>
 
                             <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                                 <Text>Don't have an account? </Text>

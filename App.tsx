@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Home from './components/Home'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import FormikSignup from './components/FormikSignup'
+import EventCreationForm from './components/EventCreationForm'
 
 const App = () => {
   const [initialRoute,setInitialRoute]=useState('');
@@ -46,6 +47,7 @@ const App = () => {
       <Stack.Screen name='Login' component={Login}></Stack.Screen>
       <Stack.Screen name='Signup' component={FormikSignup}></Stack.Screen>
       <Stack.Screen name='Home' component={Home}></Stack.Screen>
+      <Stack.Screen name='Event Creation' component={EventCreationForm}></Stack.Screen>
     </Stack.Navigator>
 
     </NavigationContainer>

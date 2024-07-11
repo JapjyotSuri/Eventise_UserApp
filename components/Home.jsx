@@ -14,12 +14,7 @@ const Home = ({ navigation }) => {
   const [allEvents, setAllEvents] = useState([]);
   const [RefreshEventList,setRefreshEventList]=useState([]);
   let subscribe = null
-  async function LogoutHandle() {
-    await AsyncStorage.removeItem('KeepLoggedIn');
-    await AsyncStorage.removeItem('Token');
-    await auth().signOut();
-    navigation.navigate('Login');
-  }
+  
   async function loadData(){
      const eventCollection=await firestore().collection('events').where('status','==','Approved').get();
      const eventsList=eventCollection.docs.map((doc) => ({
@@ -91,15 +86,16 @@ const Home = ({ navigation }) => {
   }
   return (
     
-    <View style={{ flex: 1 }}>
-      <View style={{ }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Welcome Back, {name}!!!!</Text>
+    <View style={{ flex: 1,gap: 5 ,marginTop: 10,marginBottom: 13}}>
+      <View style={{ marginLeft: 15}}>
+        <Text style={{ fontSize: 25, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>Welcome Back, {name}!!</Text>
+        
         {/* <Text>Email: {email}</Text> */}
       </View >
       <FlatList
         data={RefreshEventList}
         renderItem={ ({item}) => (
-          <View style={{flexWrap: 'wrap'}}>{    
+          <View style={{}}>{    
               <EventCard event={item} userEmail={email}/>    
           }</View>
         )
@@ -108,11 +104,14 @@ const Home = ({ navigation }) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={loadData}/>
         }
+        // ItemSeparatorComponent={() => <View style={{ height:  }}/>}
       />
-      <Pressable onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}><Text>Add task</Text></Pressable>
-      <View style={{ justifyContent: 'flex-end', flex: 1, alignItems: 'center', margin: 10 }}>
       
-        <Pressable onPress={() => LogoutHandle()} style={styles.btn}><Text>Logout</Text></Pressable>
+      <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginBottom: 10, marginRight: 30  }}>
+      <Pressable style={{backgroundColor: '#5D3FD3',height: 50,width: 100, borderRadius: 20,justifyContent: 'center',alignItems: 'center',paddingHorizontal: 4}} onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}>
+        <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>+ Add Task</Text>
+        </Pressable>
+        {/* <Pressable onPress={() => LogoutHandle()} style={styles.btn}><Text>Logout</Text></Pressable> */}
       </View>
       
       </View>

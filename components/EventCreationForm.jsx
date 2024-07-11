@@ -103,9 +103,9 @@ const EventCreationForm = ({navigation,route}) => {
          
     }
   return (
-   <View>
+   <View >
    
-    <Text style={{fontSize: 20, fontWeight: 'bold',marginVertical: 20}}>Create a new task:</Text>
+    <Text style={{fontSize: 20, fontWeight: 'bold',color: '#5D3FD3',marginLeft: 15}}>Create a new task:</Text>
     <Formik
                 initialValues={{ title: '', description: '' ,date: new Date(),location: ''}}
 
@@ -141,15 +141,18 @@ const EventCreationForm = ({navigation,route}) => {
                             <TextInput style={styles.input} placeholder='Location' value={values.location} onChangeText={handleChange('location')}  />
                         </View>
                         <View>
-                        <View>
-                             {selectedImage && <View><Image source={{uri: selectedImage}} style={{height: 100,width: 100}}></Image></View>}
+                        <View style={{marginTop: 5,justifyContent: 'center',alignItems: 'center',}}>{
+                            selectedImage && <View style={{borderRadius: 20, shadowColor: '#000',shadowOffset: { width: 0, height: 3 },shadowOpacity: 0.3,shadowRadius: 5,elevation: 5,height: 140,width: 140}}>
+                             <View><Image source={{uri: selectedImage}} style={{height: 140,width: 140,borderRadius: 10}} resizeMode='cover'></Image></View>
+                             </View>
+                             }
                         </View>
-                            <Pressable onPress={handleGalleyOpen} style={styles.btn}><Text>+ Add image from gallery</Text></Pressable>
-                            <Pressable onPress={uploadImage}><Text>Upload image</Text></Pressable>
+                            <Pressable onPress={handleGalleyOpen} style={styles.btn}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>+ Add image from gallery</Text></Pressable>
+                            <Pressable onPress={uploadImage} style={styles.btn}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>Upload image</Text></Pressable>
                             <View>
                                 {uploading && 
-                                <View>
-                                   <Text>{transferred}% completed</Text>
+                                <View style={{width: '100%',justifyContent: 'center',alignItems: 'center'}}>
+                                   <Text >{transferred}% completed</Text>
                                    {/* <ActivityIndicator size={large}></ActivityIndicator> */}
                                 </View>}
                             </View>
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
 
     },
     btn: {
-        height: 50,
+        height: 45,
         width: 350,
         backgroundColor: '#5D3FD3',
         marginTop: 10,

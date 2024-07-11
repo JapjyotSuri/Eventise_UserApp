@@ -14,18 +14,19 @@ const EventCard = ({event,userEmail}) => {
       <View style={{flexDirection: 'row', width: '100%', gap: 10}}>
         <Image
           source={{uri: event.imgUrl}}
-          style={{height: 80, width: 100, borderRadius: 10}}></Image>
+          style={{height: 85, width: 120, borderRadius: 10}}></Image>
         <View
           style={{
             width: '70%',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
+            gap: 5
           }}>
-          <Text style={{color: 'grey'}}>
-            {event.date.toDate().toLocaleDateString()}
+          <Text style={{color: 'grey', fontSize: 15}}>
+            {event.date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric',year: 'numeric' })}
           </Text>
-          <Text style={{fontSize: 20}}>{event.title}</Text>
-          <Text style={{color: 'grey'}}>{event.location}</Text>
+          <Text style={{fontSize: 18,fontWeight: 500}}>{event.title}</Text>
+          <Text style={{color: 'grey',fontSize: 15}}>{event.location}</Text>
         </View>
       </View>
     </View>
@@ -45,7 +46,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f3ff',
     width: '92%',
     height: 'auto',
-    margin: 13,
+    marginHorizontal: 14,
+    marginVertical:8,
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',

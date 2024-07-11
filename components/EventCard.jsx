@@ -2,7 +2,7 @@ import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import EventDescription from './EventDescription';
 
-const EventCard = ({event}) => {
+const EventCard = ({event,userEmail}) => {
   const [isModalVisible,setIsModalVisible]=useState(false);
   function modalStateChange(){
     setIsModalVisible(false);
@@ -31,7 +31,7 @@ const EventCard = ({event}) => {
     </View>
     </Pressable>
     <Modal visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)} animationType='slide' presentationStyle='pageSheet'>
-      <EventDescription event={event} modalStateChange={modalStateChange}/>
+      <EventDescription event={event} modalStateChange={modalStateChange} userEmail={userEmail}/>
     </Modal>
 
     </View>

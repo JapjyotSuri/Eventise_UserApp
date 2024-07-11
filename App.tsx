@@ -44,7 +44,7 @@ const App = () => {
   return (
     <NavigationContainer>
     <Stack.Navigator initialRouteName={initialRoute}>
-      <Stack.Screen name='Login' component={Login}></Stack.Screen>
+      <Stack.Screen name='Login' component={Login} ></Stack.Screen>
       <Stack.Screen name='Signup' component={FormikSignup}></Stack.Screen>
       <Stack.Screen name='Home' component={Home}></Stack.Screen>
       <Stack.Screen name='Event Creation' component={EventCreationForm}></Stack.Screen>

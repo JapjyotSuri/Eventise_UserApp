@@ -42,7 +42,8 @@ const Login = ({ navigation }) => {
         })
     }, [])
     async function onGoogleButtonPress() {
-        // Check if your device supports Google Play
+        try{
+             // Check if your device supports Google Play
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
         // Get the users ID token
         const { idToken } = await GoogleSignin.signIn();
@@ -70,6 +71,10 @@ const Login = ({ navigation }) => {
         })
         navigation.navigate('Home');
 
+        }
+        catch(error){
+            console.log(error)
+        }
 
     }
 

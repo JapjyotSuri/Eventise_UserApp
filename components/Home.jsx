@@ -1,4 +1,4 @@
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
@@ -6,12 +6,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import EventCard from './EventCard'
 const Home = ({ navigation }) => {
   const [isModalVisible,setIsModalVisible]=useState(false);
-  
+  const [refreshing,SetRefreshing]=useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
   const [userInfo, SetUserInfo] = useState('');
   const [allEvents, setAllEvents] = useState([]);
+  const [RefreshEventList,setRefreshEventList]=useState([]);
   let subscribe = null
   async function LogoutHandle() {
     await AsyncStorage.removeItem('KeepLoggedIn');
@@ -19,28 +20,38 @@ const Home = ({ navigation }) => {
     await auth().signOut();
     navigation.navigate('Login');
   }
+  async function loadData(){
+     const eventCollection=await firestore().collection('events').where('status','==','Approved').get();
+     const eventsList=eventCollection.docs.map((doc) => ({
+      eventId: doc.id,
+      ...doc.data()
+     }))
+     setRefreshEventList(eventsList)
+     SetRefreshing(false);
+  } 
   useEffect(() => {
-
+     
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
       
       if (user) {
         setLoading(true);
-        try {
 
+        try {
+          loadData();
           console.log(user.uid);
           
-          subscribe = firestore().collection('events').where('status','==','Approved').onSnapshot((querySnapshot) => {
-            let events = [];
-            querySnapshot.forEach(documentSnapshot => {
-              events.push({
-                ...documentSnapshot.data(),
-                eventId: documentSnapshot.id,
+          // subscribe = firestore().collection('events').where('status','==','Approved').onSnapshot((querySnapshot) => {
+          //   let events = [];
+          //   querySnapshot.forEach(documentSnapshot => {
+          //     events.push({
+          //       ...documentSnapshot.data(),
+          //       eventId: documentSnapshot.id,
 
-              })
-            })
-            console.log(events)
-            setAllEvents(events);
-          })
+          //     })
+          //   })
+          //   console.log(events)
+          //   setAllEvents(events);
+          // })
           const userDoc = await firestore().collection('users').doc(user.uid).get();
           if (userDoc.exists) {
             const data = userDoc._data;
@@ -54,7 +65,7 @@ const Home = ({ navigation }) => {
             setName(user.displayName || '');
             setEmail(user.email || '');
           }
-          return () => subscribe()
+          
         } catch (error) {
           console.error(error);
         } finally {
@@ -68,32 +79,44 @@ const Home = ({ navigation }) => {
     });
 
 
-    return () =>  unsubscribe();
-    
+    return () =>  {
+    //   if(subscribe){
+    // subscribe();
+    //   }
+      unsubscribe();
+    }
   }, [])
   if (loading === true) {
     return null;
   }
   return (
-    <ScrollView>
+    
     <View style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+      <View style={{ }}>
         <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Welcome Back, {name}!!!!</Text>
         {/* <Text>Email: {email}</Text> */}
       </View >
-      <View style={{flexWrap: 'wrap'}}>{
-        allEvents.map((event) => (
-          
-          <EventCard event={event}/>
-        ))
-      }</View>
+      <FlatList
+        data={RefreshEventList}
+        renderItem={ ({item}) => (
+          <View style={{flexWrap: 'wrap'}}>{    
+              <EventCard event={item} userEmail={email}/>    
+          }</View>
+        )
+        }
+        keyExtractor={item => item.title}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={loadData}/>
+        }
+      />
       <Pressable onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}><Text>Add task</Text></Pressable>
       <View style={{ justifyContent: 'flex-end', flex: 1, alignItems: 'center', margin: 10 }}>
       
         <Pressable onPress={() => LogoutHandle()} style={styles.btn}><Text>Logout</Text></Pressable>
       </View>
+      
       </View>
-    </ScrollView>
+    
   )
 }
 

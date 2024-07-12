@@ -1,8 +1,8 @@
 import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import EventDescription from './EventDescription';
-
-const EventCard = ({event,userEmail}) => {
+import Entypo from 'react-native-vector-icons/Entypo'
+const EventCard = ({event}) => {
   const [isModalVisible,setIsModalVisible]=useState(false);
   function modalStateChange(){
     setIsModalVisible(false);
@@ -26,13 +26,13 @@ const EventCard = ({event,userEmail}) => {
             {event.date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric',year: 'numeric' })}
           </Text>
           <Text style={{fontSize: 18,fontWeight: 500}}>{event.title}</Text>
-          <Text style={{color: 'grey',fontSize: 15}}>{event.location}</Text>
+          <Text style={{color: 'grey',fontSize: 15}}><Entypo name="location-pin"  size={15} color='red'/>{event.location}</Text>
         </View>
       </View>
     </View>
     </Pressable>
     <Modal visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)} animationType='slide' presentationStyle='pageSheet'>
-      <EventDescription event={event} modalStateChange={modalStateChange} userEmail={userEmail}/>
+      <EventDescription event={event} modalStateChange={modalStateChange}/>
     </Modal>
 
     </View>

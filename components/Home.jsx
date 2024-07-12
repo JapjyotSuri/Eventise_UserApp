@@ -4,9 +4,11 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import EventCard from './EventCard'
-import Swiper from 'react-native-swiper'
+import { getDistance } from 'geolib';
+import EventDescription from './EventDescription'
+import Entypo from 'react-native-vector-icons/Entypo'
 const Home = ({ navigation }) => {
-  const [isModalVisible,setIsModalVisible]=useState(false);
+  
   const [refreshing,SetRefreshing]=useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -14,8 +16,14 @@ const Home = ({ navigation }) => {
   const [userInfo, SetUserInfo] = useState('');
   const [allEvents, setAllEvents] = useState([]);
   const [RefreshEventList,setRefreshEventList]=useState([]);
+  const[nearbyEvents,setNearbyEvents]=useState([]);
+  const userLocation={latitude: "12.889910", longitude: "77.613870"}
   let subscribe = null
-  
+  const [eventToOpen,setEventToOpen]=useState(null);
+  const [isModalVisible,setIsModalVisible]=useState(false);
+  function modalStateChange(){
+    setIsModalVisible(false);
+}
   async function loadData() {
     try {
       const eventCollection = await firestore()
@@ -29,6 +37,13 @@ const Home = ({ navigation }) => {
       }));
   
       setRefreshEventList(eventsList);
+      console.log(eventsList)
+      const nearby=[...eventsList].sort((a,b)=>{//here we had to use the spread operator(...)as if we sorted dont write it the eventsList also changes as it is called by refrence hence changing the refreshEventList as well
+        const distanceA = getDistance(userLocation, { latitude: a.preciseLoaction.lat, longitude: a.preciseLoaction.lon });
+        const distanceB = getDistance(userLocation, { latitude: b.preciseLoaction.lat, longitude: b.preciseLoaction.lon  });
+        return distanceA - distanceB;
+      });
+      setNearbyEvents(nearby);
       SetRefreshing(false);
     } catch (error) {
       console.error('Error loading events:', error);
@@ -99,24 +114,28 @@ const Home = ({ navigation }) => {
     <View style={{ flex: 1,gap: 5 ,marginTop: 10,marginBottom: 13}}>
       <View style={{ marginLeft: 15}}>
         <Text style={{ fontSize: 25, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>Welcome Back, {name}!!</Text>
-        
-        {/* <Text>Email: {email}</Text> */}
       </View >
       <View style={{marginTop: 5,marginLeft: 15,marginBottom : -5}}>
         <Text style={{ fontSize: 20, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>Nearby Events: </Text>
       </View>
     <View style={{margin: 5}}>  
   <FlatList
-  data={RefreshEventList}
+  data={nearbyEvents}
   renderItem={({ item }) => (
+    <Pressable onPress={()=> {
+      setEventToOpen(item)
+      setIsModalVisible(true);
+    }}>
     <View style={styles.card}>
-      <Image source={{ uri: item.imgUrl }} style={{ width: 300, height: 200, borderRadius: 10 }} resizeMode='cover' />
-      <View style={{ flexDirection: 'column', padding: 10 ,alignItems: 'flex-start' , width: '100%',gap: 1}}>
+      <Image source={{ uri: item.imgUrl }} style={{ width: 250, height: 150, borderRadius: 10 }} resizeMode='cover' />
+      <View style={{ flexDirection: 'column',alignItems: 'flex-start' , width: '100%',gap: 1, marginTop: 5,marginLeft: 7}}>
         <Text style={{color: 'grey', fontSize: 15}}>{item.date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric',year: 'numeric' })}</Text>
         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
-        <Text style={{color: 'grey', fontSize: 15}}>{item.location}</Text>
+        <Text style={{color: 'grey', fontSize: 15}}><Entypo name="location-pin"  size={15} color='red'/>{item.location}</Text>
       </View>
     </View>
+    </Pressable>
+    
   )}
   keyExtractor={item => item.eventId} 
   horizontal={true} 
@@ -124,20 +143,15 @@ const Home = ({ navigation }) => {
   
 />
 </View>
-<View style={{marginTop: 5,marginLeft: 15}}>
+<View style={{marginTop: -5 ,marginLeft: 15}}>
         <Text style={{ fontSize: 20, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>All Events: </Text>
       </View>
-      {/* <Swiper style={{ height: 250 }} >
-  {RefreshEventList.map((event) => (
-    <EventCard key={event.eventId} event={event} userEmail={email}/>
-  ))}
-</Swiper> */}
       
       <FlatList
         data={RefreshEventList}
         renderItem={ ({item}) => (
           <View style={{}} showsButtons={true}>{    
-              <EventCard event={item} userEmail={email}/>    
+              <EventCard event={item}/>    
           }</View>
         )
         }
@@ -148,13 +162,15 @@ const Home = ({ navigation }) => {
         // ItemSeparatorComponent={() => <View style={{ height:  }}/>}
       />
       
-      <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginBottom: 10, marginRight: 30  }}>
-      <Pressable style={{backgroundColor: '#5D3FD3',height: 50,width: 200, borderRadius: 20,justifyContent: 'center',alignItems: 'center',paddingHorizontal: 4}} onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}>
+      <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginBottom: 10, marginRight: 20  }}>
+      <Pressable style={{backgroundColor: '#5D3FD3',height: 50,width: 140, borderRadius: 20,justifyContent: 'center',alignItems: 'center',paddingHorizontal: 4,position: 'absolute'}} onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}>
         <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>+ Add Event</Text>
         </Pressable>
         {/* <Pressable onPress={() => LogoutHandle()} style={styles.btn}><Text>Logout</Text></Pressable> */}
       </View>
-      
+      <Modal visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)} animationType='slide' presentationStyle='pageSheet'>
+      <EventDescription event={eventToOpen} modalStateChange={modalStateChange} />
+    </Modal>
       </View>
     
   )
@@ -174,9 +190,9 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#f3f3ff',
-    width: 320,
-    height: 'auto',
-    margin: 13, 
+    width: 270,
+    height: 230,
+   margin: 8,
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',

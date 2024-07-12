@@ -7,13 +7,19 @@ import firestore from '@react-native-firebase/firestore'
 import DatePicker from 'react-native-date-picker'
 import {launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import * as Yup from 'yup'
 const EventCreationForm = ({navigation,route}) => {
     const [selectedImage,setSelectedImage]=useState('');
     const [uploading,setUploading]=useState(false);
     const [transferred,setTransferred]=useState(0);
     const [urlOfImage,setUrl]=useState('');
     
-
+const EventCreationValidation=Yup.object().shape({
+    title: Yup.string().required("Name is required"),
+    description: Yup.string().required("Name is required"),
+    location: Yup.string().required("Name is required"),
+    title: Yup.string().required("Name is required"),
+})
 
    const {userId,name}=route.params;
     function handleGalleyOpen(){
@@ -105,10 +111,10 @@ const EventCreationForm = ({navigation,route}) => {
   return (
    <View >
    
-    <Text style={{fontSize: 20, fontWeight: 'bold',color: '#5D3FD3',marginLeft: 15}}>Create a new task:</Text>
+    <Text style={{fontSize: 20, fontWeight: 'bold',color: '#5D3FD3',marginLeft: 15}}>Create a new Event:</Text>
     <Formik
                 initialValues={{ title: '', description: '' ,date: new Date(),location: ''}}
-
+                validationSchema={EventCreationValidation}
                 onSubmit={(values) => {
                     console.log(values)
                     newTaskFunc(values);
@@ -130,15 +136,23 @@ const EventCreationForm = ({navigation,route}) => {
                         <View>
                             <TextInput style={styles.input} placeholder='Title' value={values.title} onChangeText={handleChange('title')} />
                         </View>
-
+                        <View style={{width: '100%', marginLeft: 50,marginTop: 5}}>
+                        {(errors.title && touched.title) && <Text style={{color: 'red'}}>{errors.title}</Text>}
+                        </View>
                         <View>
                             <TextInput style={styles.input} placeholder='Description' value={values.description} onChangeText={handleChange('description')}  />
                         </View>
+                        <View style={{width: '100%', marginLeft: 50,marginTop: 5}}>
+                        {(errors.description && touched.description) && <Text style={{color: 'red'}}>{errors.description}</Text>}
+                        </View>
                         <View>
-                            <DatePicker date={values.date} mode="date" onDateChange={(date)=> setFieldValue('date', date)}/>
+                            <DatePicker date={values.date} minimumDate={new Date()} mode="date" onDateChange={(date)=> setFieldValue('date', date)}/>
                         </View>
                         <View>
                             <TextInput style={styles.input} placeholder='Location' value={values.location} onChangeText={handleChange('location')}  />
+                        </View>
+                        <View style={{width: '100%', marginLeft: 50,marginTop: 5}}>
+                        {(errors.location && touched.location) && <Text style={{color: 'red'}}>{errors.location}</Text>}
                         </View>
                         <View>
                         <View style={{marginTop: 5,justifyContent: 'center',alignItems: 'center',}}>{

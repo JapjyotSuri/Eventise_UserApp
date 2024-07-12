@@ -1,9 +1,23 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
+import firestore from '@react-native-firebase/firestore'
 const EventDescription = ({event,modalStateChange,userEmail}) => {
-    
+    const [creator,setCreator]=useState('');
+    useEffect(()=>{
+        async function fetchEmail(){
+            try{
+                const userData= await firestore().collection('users').doc(event.userId).get()
+                console.log('user who has created event',userData);
+                setCreator(userData._data.email)
+
+            }
+            catch(error){
+             console.log(error);
+            }
+        }
+       fetchEmail();
+    },[event])
   return (
    <SafeAreaView>
     <View >
@@ -20,10 +34,10 @@ const EventDescription = ({event,modalStateChange,userEmail}) => {
            
             <View style={{justifyContent: 'flex-end',left: 25 , bottom: 15,position: 'absolute'}}>
             <View style={{marginTop: 50}}>
-                <Text style={{fontSize: 20}}>For more info : </Text>
+                <Text style={{fontSize: 20}}>For more information : </Text>
                 <View style={{flexDirection: 'row',width: '100%',justifyContent: 'space-between'}}>
                 <Text style={{fontSize: 17, color: '#9CA3AF'}}>{event.username}</Text>
-                <Text style={{fontSize: 17, color: '#9CA3AF'}}>{userEmail}</Text>
+                <Text style={{fontSize: 17, color: '#9CA3AF'}}>{creator}</Text>
                 </View>
             </View>
             <Pressable style={styles.btn} onPress={()=> modalStateChange()}>

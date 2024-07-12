@@ -1,9 +1,10 @@
-import { FlatList, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import EventCard from './EventCard'
+import Swiper from 'react-native-swiper'
 const Home = ({ navigation }) => {
   const [isModalVisible,setIsModalVisible]=useState(false);
   const [refreshing,SetRefreshing]=useState(false);
@@ -15,15 +16,24 @@ const Home = ({ navigation }) => {
   const [RefreshEventList,setRefreshEventList]=useState([]);
   let subscribe = null
   
-  async function loadData(){
-     const eventCollection=await firestore().collection('events').where('status','==','Approved').get();
-     const eventsList=eventCollection.docs.map((doc) => ({
-      eventId: doc.id,
-      ...doc.data()
-     }))
-     setRefreshEventList(eventsList)
-     SetRefreshing(false);
-  } 
+  async function loadData() {
+    try {
+      const eventCollection = await firestore()
+        .collection('events')
+        .where('status', '==', 'Approved')
+        .get();
+      
+      const eventsList = eventCollection.docs.map((doc) => ({
+        eventId: doc.id,
+        ...doc.data(),
+      }));
+  
+      setRefreshEventList(eventsList);
+      SetRefreshing(false);
+    } catch (error) {
+      console.error('Error loading events:', error);
+    }
+  }
   useEffect(() => {
      
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
@@ -92,10 +102,41 @@ const Home = ({ navigation }) => {
         
         {/* <Text>Email: {email}</Text> */}
       </View >
+      <View style={{marginTop: 5,marginLeft: 15,marginBottom : -5}}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>Nearby Events: </Text>
+      </View>
+    <View style={{margin: 5}}>  
+  <FlatList
+  data={RefreshEventList}
+  renderItem={({ item }) => (
+    <View style={styles.card}>
+      <Image source={{ uri: item.imgUrl }} style={{ width: 300, height: 200, borderRadius: 10 }} resizeMode='cover' />
+      <View style={{ flexDirection: 'column', padding: 10 ,alignItems: 'flex-start' , width: '100%',gap: 1}}>
+        <Text style={{color: 'grey', fontSize: 15}}>{item.date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric',year: 'numeric' })}</Text>
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
+        <Text style={{color: 'grey', fontSize: 15}}>{item.location}</Text>
+      </View>
+    </View>
+  )}
+  keyExtractor={item => item.eventId} 
+  horizontal={true} 
+  showsHorizontalScrollIndicator={false} 
+  
+/>
+</View>
+<View style={{marginTop: 5,marginLeft: 15}}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>All Events: </Text>
+      </View>
+      {/* <Swiper style={{ height: 250 }} >
+  {RefreshEventList.map((event) => (
+    <EventCard key={event.eventId} event={event} userEmail={email}/>
+  ))}
+</Swiper> */}
+      
       <FlatList
         data={RefreshEventList}
         renderItem={ ({item}) => (
-          <View style={{}}>{    
+          <View style={{}} showsButtons={true}>{    
               <EventCard event={item} userEmail={email}/>    
           }</View>
         )
@@ -108,8 +149,8 @@ const Home = ({ navigation }) => {
       />
       
       <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginBottom: 10, marginRight: 30  }}>
-      <Pressable style={{backgroundColor: '#5D3FD3',height: 50,width: 100, borderRadius: 20,justifyContent: 'center',alignItems: 'center',paddingHorizontal: 4}} onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}>
-        <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>+ Add Task</Text>
+      <Pressable style={{backgroundColor: '#5D3FD3',height: 50,width: 200, borderRadius: 20,justifyContent: 'center',alignItems: 'center',paddingHorizontal: 4}} onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}>
+        <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>+ Add Event</Text>
         </Pressable>
         {/* <Pressable onPress={() => LogoutHandle()} style={styles.btn}><Text>Logout</Text></Pressable> */}
       </View>
@@ -133,7 +174,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#f3f3ff',
-    width: '92%',
+    width: 320,
     height: 'auto',
     margin: 13, 
     padding: 10,
@@ -146,5 +187,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 7,
     elevation: 5,
-  }
+  },
+
 })

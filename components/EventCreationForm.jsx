@@ -1,27 +1,25 @@
-import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import {  Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, {useState } from 'react'
 import { Formik } from 'formik'
-import auth,{firebase} from '@react-native-firebase/auth'
-import { date } from 'yup'
 import firestore from '@react-native-firebase/firestore' 
 import DatePicker from 'react-native-date-picker'
 import {launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import * as Yup from 'yup'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 const EventCreationForm = ({navigation,route}) => {
     const [selectedImage,setSelectedImage]=useState('');
     const [uploading,setUploading]=useState(false);
     const [transferred,setTransferred]=useState(0);
     const [urlOfImage,setUrl]=useState('');
-    
+    const [uploaded,setUploaded]=useState(false);
 const EventCreationValidation=Yup.object().shape({
     title: Yup.string().required("Name is required"),
     description: Yup.string().required("Name is required"),
     location: Yup.string().required("Name is required"),
-    title: Yup.string().required("Name is required"),
+   
 })
-
-   const {userId,name}=route.params;
+   const {userId,name,email}=route.params;
     function handleGalleyOpen(){
         const options = {
             mediaType: 'photo',
@@ -44,10 +42,9 @@ const EventCreationValidation=Yup.object().shape({
     }
     async function uploadImage(){
         if(selectedImage){
-            setUploading(true);
-            
+            setUploading(true);    
             const uploaduri=selectedImage;
-          let filename=uploaduri.substring(uploaduri.lastIndexOf('/')+1);//we are getting the file name using this as it is at the end after last /
+            let filename=uploaduri.substring(uploaduri.lastIndexOf('/')+1);//we are getting the file name using this as it is at the end after last /
           //Giving each image a unique file name as one image can be used mpre than once by different users but its name will get overwritten
           console.log(filename);
           const extension=filename.split('.').pop();//this contains the type of the image like jpg,png,etc
@@ -69,6 +66,7 @@ const EventCreationValidation=Yup.object().shape({
                setUrl(urlImage)
                setUploading(false);
                Alert.alert('Image has been uploaded successfully');
+               setUploaded(true);
            } 
            catch(error){
                 console.log(error);
@@ -100,7 +98,7 @@ const EventCreationValidation=Yup.object().shape({
                 status: 'pending',
                 imgUrl: urlOfImage,
                 preciseLoaction: location,
-    
+                email: email
               })
           }
           catch(error){
@@ -111,14 +109,14 @@ const EventCreationValidation=Yup.object().shape({
   return (
    <View >
    
-    <Text style={{fontSize: 20, fontWeight: 'bold',color: '#5D3FD3',marginLeft: 15}}>Create a new Event:</Text>
+    <Text style={{fontSize: 20, fontWeight: 'bold',color: '#1659ce',marginLeft: 15}}>Create a new Event:</Text>
     <Formik
                 initialValues={{ title: '', description: '' ,date: new Date(),location: ''}}
                 validationSchema={EventCreationValidation}
                 onSubmit={(values) => {
                     console.log(values)
                     newTaskFunc(values);
-                    Alert.alert('task created')
+                    Alert.alert('Event created')
                     navigation.navigate('Home')
                 }}
             >
@@ -162,18 +160,30 @@ const EventCreationValidation=Yup.object().shape({
                              }
                         </View>
                             <Pressable onPress={handleGalleyOpen} style={styles.btn}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>+ Add image from gallery</Text></Pressable>
-                            <Pressable onPress={uploadImage} style={styles.btn}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>Upload image</Text></Pressable>
-                            <View>
-                                {uploading && 
-                                <View style={{width: '100%',justifyContent: 'center',alignItems: 'center'}}>
-                                   <Text >{transferred}% completed</Text>
-                                   {/* <ActivityIndicator size={large}></ActivityIndicator> */}
-                                </View>}
+                           
+                            { uploaded=== false && <View style={{alignItems: 'center', justifyContent: 'center',}}>
+                                <Pressable onPress={uploadImage} style={styles.btn}>
+                                    <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'center',gap: 5}}>
+                                    <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}><Ionicons name="cloud-upload-sharp" size={25} color="white" style={{fontWeight: 'bold'}}/></Text  >
+                                    <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>Upload image </Text  >
+                                    <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}> {uploading && <Text >{transferred}%</Text>}</Text  >
+                                    </View></Pressable>
                             </View>
+                            } 
+                            {
+                                uploaded=== true && <View>
+                                 <Pressable onPress={uploadImage} style={styles.btn}>
+                                 <View style={{flexDirection: 'row',alignItems: 'center',justifyContent: 'center',gap: 5}}>
+                                    <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}><Ionicons name="cloud-upload-sharp" size={25} color="white" style={{fontWeight: 'bold'}}/></Text  >
+                                    <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>Image uploaded</Text  >
+                                    </View>
+                                    </Pressable>
+                            </View>
+                            }
                         </View>
                         <View style={{ width: '100%' ,marginLeft: 50}}>
                             
-                            <Pressable style={styles.btn} onPress={handleSubmit}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>Create Task</Text></Pressable>
+                            <Pressable style={styles.btn} onPress={handleSubmit}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>Create Event</Text></Pressable>
 
                             
                         </View>
@@ -201,7 +211,7 @@ const styles = StyleSheet.create({
     btn: {
         height: 45,
         width: 350,
-        backgroundColor: '#5D3FD3',
+        backgroundColor: '#1659ce',
         marginTop: 10,
         borderRadius: 10,
         justifyContent: 'center',

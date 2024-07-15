@@ -1,24 +1,21 @@
-import { FlatList, Image, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, Modal, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import EventCard from './EventCard'
 import { getDistance } from 'geolib';
 import EventDescription from './EventDescription'
 import Entypo from 'react-native-vector-icons/Entypo'
 const Home = ({ navigation }) => {
-  
   const [refreshing,SetRefreshing]=useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
   const [userInfo, SetUserInfo] = useState('');
-  const [allEvents, setAllEvents] = useState([]);
   const [RefreshEventList,setRefreshEventList]=useState([]);
   const[nearbyEvents,setNearbyEvents]=useState([]);
   const userLocation={latitude: "12.889910", longitude: "77.613870"}
-  let subscribe = null
+  
   const [eventToOpen,setEventToOpen]=useState(null);
   const [isModalVisible,setIsModalVisible]=useState(false);
   function modalStateChange(){
@@ -59,7 +56,7 @@ const Home = ({ navigation }) => {
         try {
           loadData();
           console.log(user.uid);
-          
+          //Below code is used to get realtime updates but in the app we want to update the list when it is pulled down to refresh
           // subscribe = firestore().collection('events').where('status','==','Approved').onSnapshot((querySnapshot) => {
           //   let events = [];
           //   querySnapshot.forEach(documentSnapshot => {
@@ -100,9 +97,7 @@ const Home = ({ navigation }) => {
 
 
     return () =>  {
-    //   if(subscribe){
-    // subscribe();
-    //   }
+    
       unsubscribe();
     }
   }, [])
@@ -111,12 +106,12 @@ const Home = ({ navigation }) => {
   }
   return (
     
-    <View style={{ flex: 1,gap: 5 ,marginTop: 10,marginBottom: 13}}>
-      <View style={{ marginLeft: 15}}>
-        <Text style={{ fontSize: 25, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>Welcome Back, {name}!!</Text>
+    <View style={{ flex: 1,gap: 5 ,marginBottom: 13 }}>
+      <View style={{ marginLeft: 15,marginTop: 17}}>
+        <Text style={{ fontSize: 23, fontWeight: 'bold' ,color: '#1659ce',marginTop: 5}}>Welcome Back, {name}!!</Text>
       </View >
-      <View style={{marginTop: 5,marginLeft: 15,marginBottom : -5}}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>Nearby Events: </Text>
+      <View style={{marginTop: 1,marginLeft: 15,marginBottom : -5}}>
+        <Text style={{ fontSize: 19, fontWeight: 'bold' ,color: 'black',marginTop: 5}}>Nearby Events: </Text>
       </View>
     <View style={{margin: 5}}>  
   <FlatList
@@ -127,11 +122,11 @@ const Home = ({ navigation }) => {
       setIsModalVisible(true);
     }}>
     <View style={styles.card}>
-      <Image source={{ uri: item.imgUrl }} style={{ width: 250, height: 150, borderRadius: 10 }} resizeMode='cover' />
-      <View style={{ flexDirection: 'column',alignItems: 'flex-start' , width: '100%',gap: 1, marginTop: 5,marginLeft: 7}}>
+      <Image source={{ uri: item.imgUrl }} style={{ width: 270, height: 150, borderTopLeftRadius: 10,  borderTopRightRadius: 10}} resizeMode='cover' />
+      <View style={{ flexDirection: 'column',alignItems: 'flex-start' , width: '100%', marginTop: 10,marginLeft: 7,paddingHorizontal: 10,gap: 4}}>
         <Text style={{color: 'grey', fontSize: 15}}>{item.date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric',year: 'numeric' })}</Text>
         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
-        <Text style={{color: 'grey', fontSize: 15}}><Entypo name="location-pin"  size={15} color='red'/>{item.location}</Text>
+        <Text style={{color: 'grey', fontSize: 15}}><Entypo name="location-pin"  size={16} color='red'/>{item.location}</Text>
       </View>
     </View>
     </Pressable>
@@ -144,7 +139,7 @@ const Home = ({ navigation }) => {
 />
 </View>
 <View style={{marginTop: -5 ,marginLeft: 15}}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold' ,color: '#5D3FD3',marginTop: 5}}>All Events: </Text>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' ,color: 'black',marginTop: 5}}>All Events: </Text>
       </View>
       
       <FlatList
@@ -159,14 +154,14 @@ const Home = ({ navigation }) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={loadData}/>
         }
-        // ItemSeparatorComponent={() => <View style={{ height:  }}/>}
+        
       />
       
       <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginBottom: 10, marginRight: 20  }}>
-      <Pressable style={{backgroundColor: '#5D3FD3',height: 50,width: 140, borderRadius: 20,justifyContent: 'center',alignItems: 'center',paddingHorizontal: 4,position: 'absolute'}} onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name })}>
+      <Pressable style={{backgroundColor: '#1659ce',height: 50,width: 140, borderRadius: 20,justifyContent: 'center',alignItems: 'center',paddingHorizontal: 4,position: 'absolute'}} onPress={() => navigation.navigate('Event Creation', { userId: userInfo, name: name ,email: email})}>
         <Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold', }}>+ Add Event</Text>
         </Pressable>
-        {/* <Pressable onPress={() => LogoutHandle()} style={styles.btn}><Text>Logout</Text></Pressable> */}
+        
       </View>
       <Modal visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)} animationType='slide' presentationStyle='pageSheet'>
       <EventDescription event={eventToOpen} modalStateChange={modalStateChange} />
@@ -193,15 +188,13 @@ const styles = StyleSheet.create({
     width: 270,
     height: 230,
    margin: 8,
-    padding: 10,
     alignItems: 'center',
-    justifyContent: 'center',
     flexDirection: 'column',
     borderRadius: 10,
     shadowColor: 'rgba(0, 0, 0, 0.20)',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 7,
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
     elevation: 5,
   },
 

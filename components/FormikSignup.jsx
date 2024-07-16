@@ -77,7 +77,7 @@ const FormikLogin = ({navigation}) => {
               fontSize: 20,
               fontWeight: 'bold',
               marginBottom: 15,
-              color: '#5D3FD3',
+              color: '#1659ce',
             }}>
             Hello there,Lets get started!!!
           </Text>
@@ -155,7 +155,7 @@ const FormikLogin = ({navigation}) => {
                 }}>
                 <Text>Already have an account? </Text>
                 <Pressable onPress={() => navigation.navigate('Login')}>
-                  <Text style={{color: '#5D3FD3'}}>Login</Text>
+                  <Text style={{color: '#1659ce'}}>Login</Text>
                 </Pressable>
               </View>
             </>
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   btn: {
     height: 50,
     width: 350,
-    backgroundColor: '#5D3FD3',
+    backgroundColor: '#1659ce',
     marginTop: 10,
     borderRadius: 10,
     justifyContent: 'center',

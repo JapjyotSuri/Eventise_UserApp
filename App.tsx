@@ -48,8 +48,28 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen name='Login' component={Login}
-          options={({ navigation }) => ({ headerLeft: () => <></> })}></Stack.Screen>
-        <Stack.Screen name='Signup' component={FormikSignup} options={({ navigation }) => ({ headerLeft: () => <></> })}></Stack.Screen>
+          options={({ navigation }) => (
+            {
+              headerLeft: () => <></>,
+              title: 'Login',
+              headerTitleStyle: {
+                color: '#1659ce',
+                fontSize: 20,
+                fontWeight: 'bold'
+              },
+            }
+          )}></Stack.Screen>
+        <Stack.Screen name='Signup' component={FormikSignup} options={({ navigation }) => (
+          {
+            headerLeft: () => <></>,
+            title: 'Signup',
+            headerTitleStyle: {
+              color: '#1659ce',
+              fontSize: 20,
+              fontWeight: 'bold'
+            }
+          }
+        )}></Stack.Screen>
         <Stack.Screen name='Home' component={Home}
           options={({ navigation }) => ({
             title: 'Events List',

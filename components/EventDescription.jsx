@@ -1,9 +1,28 @@
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {Alert, Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import firestore, { onSnapshot } from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 const EventDescription = ({event, modalStateChange, navigation}) => {
+  const [alreadyRegistered,setAlreadyRegistered]=useState(false);
+  useEffect(()=>{
+    const unsubscribe= auth().onAuthStateChanged( async (user) => {
+      if(user){
+        const registrationQuery = await firestore()
+        .collection('registrations')
+        .where('eventId', '==', event.eventId)
+        .where('userId', '==', user.uid)
+        .get();
+
+      if (!registrationQuery.empty) {
+        setAlreadyRegistered(true);
+      }
+      }
+      return ()=> unsubscribe()
+    })
+  },[event.eventId])
   return (
     <SafeAreaView>
       <View>
@@ -39,7 +58,6 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
           <Text style={{fontSize: 17, color: '#9CA3AF', textAlign: 'justify'}}>
             {event.description}
           </Text>
-
           <View
             style={{
               justifyContent: 'flex-end',
@@ -74,8 +92,20 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
                 </View>
               </View>
             </View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between' , paddingHorizontal: 10}}>
-              <Pressable 
+            <View style={{flexDirection: 'row', justifyContent: 'space-between' , paddingHorizontal: 10,marginTop: 2,marginBottom:4}}>
+              <View>
+                {
+                  alreadyRegistered ? (<View>
+                    <Pressable 
+              onPress={() => {
+                Alert.alert('You have alredy registered for this event')
+              }}
+              style={[styles.btn,{ backgroundColor: 'green'}]} >
+                <Text style={{fontSize: 19, color: 'white'}}>Already Registered</Text>
+              </Pressable>
+                  </View>): 
+                  (<View>
+                    <Pressable 
               onPress={() => {
                 navigation.navigate('Event Registration',{event: event});
                 modalStateChange();
@@ -83,6 +113,10 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
               style={[styles.btn,{ backgroundColor: 'green'}]} >
                 <Text style={{fontSize: 20, color: 'white'}}>Register</Text>
               </Pressable>
+                  </View>)
+                }
+              </View>
+              
               <Pressable
                 onPress={() => modalStateChange()}
                 style={[styles.btn, {width: 100}]}>

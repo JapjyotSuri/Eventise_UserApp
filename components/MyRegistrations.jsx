@@ -4,7 +4,6 @@ import firestore, {onSnapshot} from '@react-native-firebase/firestore';
 import RegisteredTaskInfo from './RegisteredTaskInfo';
 import auth from '@react-native-firebase/auth'
 const MyRegistrations = ({route, navigation}) => {
-  const {uid} = route.params;
   const [eventsRegistered, setEventsRegistered] = useState([]);
   useEffect(() => {
     const subscribe= auth().onAuthStateChanged((user) => {
@@ -30,7 +29,7 @@ const MyRegistrations = ({route, navigation}) => {
     })
    
     return () => subscribe();
-  }, [uid]);
+  }, []);
   if(eventsRegistered.length === 0){
     return(
         <View style={{height: '85%',justifyContent: 'center',alignItems: 'center'}}>
@@ -50,6 +49,7 @@ const MyRegistrations = ({route, navigation}) => {
                 <RegisteredTaskInfo
                   eventId={item.eventId}
                   navigation={navigation}
+                  status={item.status}
                 />
               }
             </View>

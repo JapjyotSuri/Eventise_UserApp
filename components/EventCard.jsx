@@ -2,7 +2,7 @@ import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import EventDescription from './EventDescription';
 import Entypo from 'react-native-vector-icons/Entypo';
-const EventCard = ({event}) => {
+const EventCard = ({event,navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   function modalStateChange() {
     setIsModalVisible(false);
@@ -45,7 +45,7 @@ const EventCard = ({event}) => {
         onRequestClose={() => setIsModalVisible(false)}
         animationType="slide"
         presentationStyle="pageSheet">
-        <EventDescription event={event} modalStateChange={modalStateChange} />
+        <EventDescription event={event} modalStateChange={modalStateChange} navigation={navigation} />
       </Modal>
     </View>
   );

@@ -107,7 +107,7 @@ const Home = ({ navigation }) => {
   return (
     
     <View style={{ flex: 1,gap: 5 ,marginBottom: 13 }}>
-      <View style={{ marginLeft: 15,marginTop: 17}}>
+      <View style={{ marginLeft: 15,marginTop: 10}}>
         <Text style={{ fontSize: 23, fontWeight: 'bold' ,color: '#1659ce',marginTop: 5}}>Welcome Back, {name}!!</Text>
       </View >
       <View style={{marginTop: 1,marginLeft: 15,marginBottom : -5}}>
@@ -146,7 +146,7 @@ const Home = ({ navigation }) => {
         data={RefreshEventList}
         renderItem={ ({item}) => (
           <View style={{}} showsButtons={true}>{    
-              <EventCard event={item}/>    
+              <EventCard event={item} navigation={navigation}/>    
           }</View>
         )
         }
@@ -164,7 +164,7 @@ const Home = ({ navigation }) => {
         
       </View>
       <Modal visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)} animationType='slide' presentationStyle='pageSheet'>
-      <EventDescription event={eventToOpen} modalStateChange={modalStateChange} />
+      <EventDescription event={eventToOpen} modalStateChange={modalStateChange} navigation={navigation}/>
     </Modal>
       </View>
     

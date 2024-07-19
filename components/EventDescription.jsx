@@ -3,7 +3,7 @@ import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-const EventDescription = ({event, modalStateChange}) => {
+const EventDescription = ({event, modalStateChange, navigation}) => {
   return (
     <SafeAreaView>
       <View>
@@ -20,13 +20,11 @@ const EventDescription = ({event, modalStateChange}) => {
             }}>
             <Pressable>
               <Text style={{fontSize: 17, color: '#9CA3AF'}}>
-                {event.date
-                  .toDate()
-                  .toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
+                {event.date.toDate().toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
               </Text>
             </Pressable>
             <Pressable>
@@ -76,9 +74,21 @@ const EventDescription = ({event, modalStateChange}) => {
                 </View>
               </View>
             </View>
-            <Pressable style={styles.btn} onPress={() => modalStateChange()}>
-              <Text style={{fontSize: 20, color: 'white'}}>Close</Text>
-            </Pressable>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between' , paddingHorizontal: 10}}>
+              <Pressable 
+              onPress={() => {
+                navigation.navigate('Event Registration',{event: event});
+                modalStateChange();
+              }}
+              style={[styles.btn,{ backgroundColor: 'green'}]} >
+                <Text style={{fontSize: 20, color: 'white'}}>Register</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => modalStateChange()}
+                style={[styles.btn, {width: 100}]}>
+                <Text style={{fontSize: 20, color: 'white'}}>Close</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       </View>
@@ -105,7 +115,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     height: 50,
-    width: 350,
+    width: 200,
     backgroundColor: 'red',
     marginTop: 10,
     borderRadius: 10,

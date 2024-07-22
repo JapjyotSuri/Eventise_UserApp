@@ -92,7 +92,7 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
                 </View>
               </View>
             </View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between' , paddingHorizontal: 10,marginTop: 2,marginBottom:4}}>
+            <View style={{flexDirection: 'row', justifyContent: 'center' , paddingHorizontal: 10,marginTop: 4,marginBottom:4,gap: 20}}>
               <View>
                 {
                   alreadyRegistered ? (<View>
@@ -100,8 +100,8 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
               onPress={() => {
                 Alert.alert('You have alredy registered for this event')
               }}
-              style={[styles.btn,{ backgroundColor: 'green'}]} >
-                <Text style={{fontSize: 19, color: 'white'}}>Already Registered</Text>
+              style={[styles.btn,{ backgroundColor: '#BBF7D0'}]} >
+                <Text style={{fontSize: 19, color: '#065F46'}}>Registered</Text>
               </Pressable>
                   </View>): 
                   (<View>
@@ -110,8 +110,8 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
                 navigation.navigate('Event Registration',{event: event});
                 modalStateChange();
               }}
-              style={[styles.btn,{ backgroundColor: 'green'}]} >
-                <Text style={{fontSize: 20, color: 'white'}}>Register</Text>
+              style={[styles.btn,{ backgroundColor: '#BBF7D0'}]} >
+                <Text style={{fontSize: 20, color: '#065F46'}}>Register</Text>
               </Pressable>
                   </View>)
                 }
@@ -119,8 +119,8 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
               
               <Pressable
                 onPress={() => modalStateChange()}
-                style={[styles.btn, {width: 100}]}>
-                <Text style={{fontSize: 20, color: 'white'}}>Close</Text>
+                style={styles.btn}>
+                <Text style={{fontSize: 20, color: '#991B1B'}}>Close</Text>
               </Pressable>
             </View>
           </View>
@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
   },
   btn: {
     height: 50,
-    width: 200,
-    backgroundColor: 'red',
+    width: 140,
+    backgroundColor: '#FECACA',
     marginTop: 10,
     borderRadius: 10,
     justifyContent: 'center',

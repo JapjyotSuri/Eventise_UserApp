@@ -39,7 +39,10 @@ const MyRegistrations = ({route, navigation}) => {
   }
   return (
     <View>
-      <View style={{marginTop: 10}}>
+      <View>
+      <View style={{ marginLeft: 15,marginTop: 10,marginBottom: 10}}>
+        <Text style={{ fontSize: 23, fontWeight: 'bold' ,color: '#1659ce',marginTop: 5}}>Your Event Journey</Text>
+      </View >
         <FlatList
           data={eventsRegistered}
           keyExtractor={item => item.registrationId}

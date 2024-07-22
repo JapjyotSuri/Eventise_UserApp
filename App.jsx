@@ -12,6 +12,7 @@ import auth from '@react-native-firebase/auth'
 import EventRegistrationForm from './components/EventRegistrationForm'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MyRegistrations from './components/MyRegistrations'
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
 const App = () => {
   const [initialRoute, setInitialRoute] = useState('');
   const [loading, setLoading] = useState(true);
@@ -88,7 +89,7 @@ const App = () => {
               fontSize: 20,
               fontWeight: 'bold'
             },
-            headerLeft: () => <FontAwesome name="user-circle-o" style={{ color: '#1659ce', fontSize: 30 }} onPress={()=> navigation.navigate('My Registrations',{uid: userId})}/>,
+            headerLeft: () => <EvilIcons name="user" style={{ color: '#1659ce', fontSize: 45 }} onPress={()=> navigation.navigate('My Registrations',{uid: userId})}/>,
             headerRight: () => <AntDesign name='logout' style={{ color: 'red', fontSize: 27 }} onPress={async () => {
               await AsyncStorage.removeItem('KeepLoggedIn');
               await AsyncStorage.removeItem('Token');

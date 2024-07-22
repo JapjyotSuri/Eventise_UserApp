@@ -107,7 +107,7 @@ const Home = ({ navigation }) => {
   return (
     
     <View style={{ flex: 1,gap: 5 ,marginBottom: 13 }}>
-      <View style={{ marginLeft: 15,marginTop: 10}}>
+      <View style={{ marginLeft: 15,marginTop: 12}}>
         <Text style={{ fontSize: 23, fontWeight: 'bold' ,color: '#1659ce',marginTop: 5}}>Welcome Back, {name}!!</Text>
       </View >
       <View style={{marginTop: 1,marginLeft: 15,marginBottom : -5}}>

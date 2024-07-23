@@ -13,6 +13,9 @@ import EventRegistrationForm from './components/EventRegistrationForm'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MyRegistrations from './components/MyRegistrations'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import MyProfile from './components/MyProfile'
+import EditProfile from './components/EditProfile'
+import FeedbackPage from './components/FeedbackPage'
 const App = () => {
   const [initialRoute, setInitialRoute] = useState('');
   const [loading, setLoading] = useState(true);
@@ -95,7 +98,7 @@ const App = () => {
               await AsyncStorage.removeItem('Token');
               await auth().signOut();
               navigation.navigate('Login');
-              navigation.navigate('Login')
+              
             }} />
           })}></Stack.Screen>
         <Stack.Screen name='Event Creation'
@@ -136,9 +139,57 @@ const App = () => {
             ),
           })}
         ></Stack.Screen>
-        <Stack.Screen name='My Registrations' component={MyRegistrations}
+        <Stack.Screen name='My Registrations' component={MyProfile}
           options={({ navigation }) => ({
-            title: 'My Registrations',
+            title: 'Your Profile',
+            headerTitleStyle: {
+              color: '#1659ce',
+              fontSize: 20,
+              fontWeight: 'bold'
+            },
+            headerLeft: () => (
+              <AntDesign
+                onPress={() => navigation.navigate('Home')}
+                name="back"
+                size={27}
+                color="#1659ce"
+              />
+            ),
+            headerRight: () => <AntDesign name='logout' style={{ color: 'red', fontSize: 27 }} onPress={async () => {
+              await AsyncStorage.removeItem('KeepLoggedIn');
+              await AsyncStorage.removeItem('Token');
+              await auth().signOut();
+              navigation.navigate('Login');
+              navigation.navigate('Login')
+            }} />
+          })}></Stack.Screen>
+           <Stack.Screen name='Edit Profile' component={EditProfile}
+          options={({ navigation }) => ({
+            title: 'Edit Profile',
+            headerTitleStyle: {
+              color: '#1659ce',
+              fontSize: 20,
+              fontWeight: 'bold'
+            },
+            headerLeft: () => (
+              <AntDesign
+                onPress={() => navigation.navigate('Home')}
+                name="back"
+                size={27}
+                color="#1659ce"
+              />
+            ),
+            headerRight: () => <AntDesign name='logout' style={{ color: 'red', fontSize: 27 }} onPress={async () => {
+              await AsyncStorage.removeItem('KeepLoggedIn');
+              await AsyncStorage.removeItem('Token');
+              await auth().signOut();
+              navigation.navigate('Login');
+              navigation.navigate('Login')
+            }} />
+          })}></Stack.Screen>
+          <Stack.Screen name='Feedback' component={FeedbackPage}
+          options={({ navigation }) => ({
+            title: 'Feedback',
             headerTitleStyle: {
               color: '#1659ce',
               fontSize: 20,

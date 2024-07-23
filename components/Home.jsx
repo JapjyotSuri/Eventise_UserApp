@@ -1,4 +1,4 @@
-import { FlatList, Image, Modal, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, Modal, Pressable, RefreshControl, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
@@ -6,6 +6,7 @@ import EventCard from './EventCard'
 import { getDistance } from 'geolib';
 import EventDescription from './EventDescription'
 import Entypo from 'react-native-vector-icons/Entypo'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 const Home = ({ navigation }) => {
   const [refreshing,SetRefreshing]=useState(false);
   const [name, setName] = useState('');
@@ -15,9 +16,31 @@ const Home = ({ navigation }) => {
   const [RefreshEventList,setRefreshEventList]=useState([]);
   const[nearbyEvents,setNearbyEvents]=useState([]);
   const userLocation={latitude: "12.889910", longitude: "77.613870"}
-  
+  // const [search,setSearch]=useState('');
+  // const [searchList,setSearchList]=useState([]);
+  // const [searching,setSearching]=useState(false);
   const [eventToOpen,setEventToOpen]=useState(null);
   const [isModalVisible,setIsModalVisible]=useState(false);
+  // function handleSearch(){
+  //     if(search===""){
+  //       setSearchList(RefreshEventList);
+  //       setSearching(false);
+  //       setSearching(false);
+  //     }
+  //     else{
+  //       setSearching(true);
+  //       const eventsFiltered=RefreshEventList.filter((event)=>{
+  //         return (
+  //           search &&
+  //           (event.title.includes(search) ||
+  //             event.location.includes(search))
+  //         );
+  
+  //       })
+  //       // setSearchList(eventsFiltered);
+        
+  //     }
+  // }
   function modalStateChange(){
     setIsModalVisible(false);
 }
@@ -42,12 +65,13 @@ const Home = ({ navigation }) => {
       });
       setNearbyEvents(nearby);
       SetRefreshing(false);
+      // setSearchList(eventsList)
     } catch (error) {
       console.error('Error loading events:', error);
     }
   }
   useEffect(() => {
-     
+    let userDocUnsubscribe
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
       
       if (user) {
@@ -69,20 +93,23 @@ const Home = ({ navigation }) => {
           //   console.log(events)
           //   setAllEvents(events);
           // })
-          const userDoc = await firestore().collection('users').doc(user.uid).get();
-          if (userDoc.exists) {
-            const data = userDoc._data;
-            console.log(data);
-            setName(data.name);
-            setEmail(data.email);
-            SetUserInfo(data.uid)
-
-          }
-          else {
-            setName(user.displayName || '');
-            setEmail(user.email || '');
-          }
+          const userDoc = await firestore().collection('users').doc(user.uid);
+          userDocUnsubscribe=userDoc.onSnapshot((docSnapshot) => {
+            if (docSnapshot.exists) {
+              const data = docSnapshot._data;
+              console.log(data);
+              setName(data.name);
+              setEmail(data.email);
+              SetUserInfo(data.uid)
+  
+            }
+            else {
+              setName(user.displayName || '');
+              setEmail(user.email || '');
+            }
+          })
           
+          return () => userDocUnsubscribe()
         } catch (error) {
           console.error(error);
         } finally {
@@ -92,12 +119,18 @@ const Home = ({ navigation }) => {
         setName('');
         setEmail('');
         setLoading(false);
+        if (userDocUnsubscribe) {//we had to do this because even after a user logs out the above onSnapshot still exixts and tries to access user that is now null and gives an error 
+          //we have to unsubscribe to the above onSnapshot when user is logged out
+          userDocUnsubscribe();
+        }
       }
     });
 
 
     return () =>  {
-    
+    if(userDocUnsubscribe){
+      userDocUnsubscribe();
+    }
       unsubscribe();
     }
   }, [])
@@ -114,7 +147,7 @@ const Home = ({ navigation }) => {
         <Text style={{ fontSize: 19, fontWeight: 'bold' ,color: 'black',marginTop: 5}}>Nearby Events: </Text>
       </View>
     <View style={{margin: 5}}>  
-  <FlatList
+   <FlatList
   data={nearbyEvents}
   renderItem={({ item }) => (
     <Pressable onPress={()=> {
@@ -126,7 +159,7 @@ const Home = ({ navigation }) => {
       <View style={{ flexDirection: 'column',alignItems: 'flex-start' , width: '100%', marginTop: 10,marginLeft: 7,paddingHorizontal: 10,gap: 4}}>
         <Text style={{color: 'grey', fontSize: 15}}>{item.date.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric',year: 'numeric' })}</Text>
         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
-        <Text style={{color: 'grey', fontSize: 15}}><Entypo name="location-pin"  size={16} color='red'/>{item.location}</Text>
+        <Text style={{color: 'grey', fontSize: 15,}}><Entypo name="location-pin"  size={16} color='red'/>{item.location}</Text>
       </View>
     </View>
     </Pressable>
@@ -186,7 +219,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#f3f3ff',
     width: 270,
-    height: 230,
+    height: 234,
    margin: 8,
     alignItems: 'center',
     flexDirection: 'column',
@@ -197,5 +230,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  input: {
+    marginTop: 10,
+    width: 340,
+    height: 40,
+    borderColor: 'ligthgrey',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+  }
 
 })

@@ -98,10 +98,12 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
                   alreadyRegistered ? (<View>
                     <Pressable 
               onPress={() => {
-                Alert.alert('You have alredy registered for this event')
+                Alert.alert('You have already registered for this event')
+                navigation.navigate('Feedback')
+                modalStateChange();
               }}
               style={[styles.btn,{ backgroundColor: '#BBF7D0'}]} >
-                <Text style={{fontSize: 19, color: '#065F46'}}>Registered</Text>
+                <Text style={{fontSize: 16, color: '#065F46'}}>Registered,Wanna write a review!!</Text>
               </Pressable>
                   </View>): 
                   (<View>

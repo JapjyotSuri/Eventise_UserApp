@@ -3,33 +3,73 @@ import React, {useEffect, useState} from 'react';
 import firestore, {onSnapshot} from '@react-native-firebase/firestore';
 import RegisteredTaskInfo from './RegisteredTaskInfo';
 import auth from '@react-native-firebase/auth'
-const MyRegistrations = ({route, navigation}) => {
+const MyRegistrations = ({route, navigation,currentUser}) => {
   const [eventsRegistered, setEventsRegistered] = useState([]);
-  useEffect(() => {
-    const subscribe= auth().onAuthStateChanged((user) => {
-        if(user){
-            console.log(user)
-            const unsubscribe = firestore()
-            .collection('registrations')
-            .where('userId', '==', user.uid)
-            .onSnapshot(querySnapshot => {
-              let registeredEvents = [];
-              querySnapshot.forEach(documentSnapshot => {
-                registeredEvents.push({
-                  ...documentSnapshot.data(),
-                  registerationId: documentSnapshot.id,
-                });
-              });
-              console.log('events registered are', registeredEvents);
-              setEventsRegistered(registeredEvents);
-            });
-            return ()=> unsubscribe()
-        }
+//   useEffect(() => { 
+//     console.log("current user is",currentUser)
+//    //here i had to use onAuthStateChanged because when user logouts the it gives an error that cant read property of  null even after putting if condition
+//     const subscribe= auth().onAuthStateChanged((user) => {
+//         if(user){
+//             console.log(user)
+//             const unsubscribe = firestore()
+//             .collection('registrations')
+//             .where('userId', '==', user.uid)
+//             .onSnapshot(querySnapshot => {
+//               let registeredEvents = [];
+//               querySnapshot.forEach(documentSnapshot => {
+//                 registeredEvents.push({
+//                   ...documentSnapshot.data(),
+//                   registerationId: documentSnapshot.id,
+//                 });
+//               });
+//               console.log('events registered are', registeredEvents);
+//               setEventsRegistered(registeredEvents);
+//             });
+//             return ()=> unsubscribe() 
+//         }
        
-    })
+//     })
    
-    return () => subscribe();
-  }, []);
+//     return () => subscribe();
+
+// }, []);
+
+useEffect(() => {
+  let unsubscribe;
+
+  const authUnsubscribe = auth().onAuthStateChanged((user) => {
+    if (user) {
+      unsubscribe = firestore()
+        .collection('registrations')
+        .where('userId', '==', user.uid)
+        .onSnapshot(
+          (querySnapshot) => {
+            const registeredEvents = [];
+            querySnapshot.forEach((documentSnapshot) => {
+              registeredEvents.push({
+                ...documentSnapshot.data(),
+                registrationId: documentSnapshot.id,
+              });
+            });
+            setEventsRegistered(registeredEvents);
+          },
+          (error) => {
+            console.log('Error fetching registrations:', error);
+          }
+        );
+    } else {
+      setEventsRegistered([]);
+    }
+  });
+
+  return () => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+    authUnsubscribe();
+  };
+}, []);
+
   if(eventsRegistered.length === 0){
     return(
         <View style={{height: '85%',justifyContent: 'center',alignItems: 'center'}}>

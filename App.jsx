@@ -189,7 +189,7 @@ const App = () => {
           })}></Stack.Screen>
           <Stack.Screen name='Feedback' component={FeedbackPage}
           options={({ navigation }) => ({
-            title: 'Feedback',
+            title: 'Write a Feedback',
             headerTitleStyle: {
               color: '#1659ce',
               fontSize: 20,

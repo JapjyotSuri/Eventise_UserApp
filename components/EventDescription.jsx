@@ -7,9 +7,11 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 const EventDescription = ({event, modalStateChange, navigation}) => {
   const [alreadyRegistered,setAlreadyRegistered]=useState(false);
+  const [currentUserId,setCurrentUserId]=useState('');
   useEffect(()=>{
     const unsubscribe= auth().onAuthStateChanged( async (user) => {
       if(user){
+        setCurrentUserId(user.uid)
         const registrationQuery = await firestore()
         .collection('registrations')
         .where('eventId', '==', event.eventId)
@@ -99,7 +101,7 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
                     <Pressable 
               onPress={() => {
                 Alert.alert('You have already registered for this event')
-                navigation.navigate('Feedback')
+                navigation.navigate('Feedback',{event: event,currentUserId: currentUserId})
                 modalStateChange();
               }}
               style={[styles.btn,{ backgroundColor: '#BBF7D0'}]} >

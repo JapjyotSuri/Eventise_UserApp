@@ -14,7 +14,7 @@ const MyRegistrationsCard = ({event,navigation,status}) => {
             return  'green';
         case 'Rejected':
             return 'red';
-        case 'pending':
+        case 'Pending':
             return '#FFC107';
 
     }

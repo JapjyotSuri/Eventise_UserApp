@@ -18,7 +18,7 @@ const RegisteredTaskInfo = ({eventId,navigation,status}) => {
        getEventData()
     },[])
   return (
-    <View>
+    <View >
       { eventData && <MyRegistrationsCard event={eventData} navigation={navigation} status={status}/>}
     </View>
   )

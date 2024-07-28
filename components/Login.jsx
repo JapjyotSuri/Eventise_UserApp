@@ -42,7 +42,7 @@ const Login = ({navigation}) => {
       .auth()
       .sendPasswordResetEmail(values.email)
       .then(() => {
-        Alert.alert('Password reser email sent');
+        Alert.alert('Password reset email sent');
       })
       .catch(error => {
         console.log(error);
@@ -112,6 +112,7 @@ const Login = ({navigation}) => {
       <View style={{flex: 1}}>
         <Formik
           initialValues={{email: '', password: ''}}
+          validationSchema={loginValidation}
           onSubmit={values => {
             console.log(values);
             loginfunc(values);
@@ -204,25 +205,6 @@ const Login = ({navigation}) => {
         </Formik>
       </View>
     </View>
-
-    //Code written using normal form
-    // <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', height: '80%' }}>
-    //   <View >
-    //     <TextInput style={styles.input} placeholder='Email' value={email} onChangeText={setEmail} />
-    //     <TextInput style={styles.input} placeholder='Password' value={password} onChangeText={setPassword} secureTextEntry={true} />
-    //     <Pressable style={styles.btn} onPress={loginfunc}><Text style={{ fontSize: 17, color: 'white', fontWeight: 'bold' }}>Login</Text></Pressable>
-    //     <View style={{ flexDirection: 'row', marginTop: 10 }}>
-    //       <Text>forgot password? </Text>
-    //       <Pressable onPress={() => resetPassword()}><Text style={{ color: '#5D3FD3' }}>reset password</Text></Pressable>
-    //     </View>
-    //     <View style={{ flexDirection: 'row', marginTop: 10 }}>
-    //       <Text>Don't have an account? </Text>
-    //       <Pressable onPress={() => navigation.navigate('Signup')}><Text style={{ color: '#5D3FD3' }}>Signup</Text></Pressable>
-    //     </View>
-    //     <Image></Image>
-    //     <Pressable onPress={onGoogleButtonPress}><Text style={{ color: '#5D3FD3' }}>Sign in with google</Text></Pressable>
-    //   </View>
-    // </View>
   );
 };
 

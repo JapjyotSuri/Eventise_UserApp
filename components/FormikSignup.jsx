@@ -106,7 +106,7 @@ const FormikLogin = ({navigation}) => {
                   onChangeText={handleChange('name')}
                 />
               </View>
-              {errors.name && touched.name && <Text>{errors.name}</Text>}
+              {errors.name && touched.name && <Text style={{color: 'red'}}>{errors.name}</Text>}
               <View>
                 <TextInput
                   style={styles.input}
@@ -115,7 +115,7 @@ const FormikLogin = ({navigation}) => {
                   onChangeText={handleChange('email')}
                 />
               </View>
-              {errors.email && touched.email && <Text>{errors.email}</Text>}
+              {errors.email && touched.email && <Text style={{color: 'red'}}>{errors.email}</Text>}
 
               <View>
                 <TextInput
@@ -127,7 +127,7 @@ const FormikLogin = ({navigation}) => {
                 />
               </View>
               {errors.password && touched.password && (
-                <Text>{errors.password}</Text>
+                <Text style={{color: 'red'}}>{errors.password}</Text>
               )}
               <View>
                 <TextInput
@@ -139,7 +139,7 @@ const FormikLogin = ({navigation}) => {
                 />
               </View>
               {errors.confirmpassword && touched.confirmpassword && (
-                <Text>{errors.confirmpassword}</Text>
+                <Text style={{color: 'red'}}>{errors.confirmpassword}</Text>
               )}
               <Pressable style={styles.btn} onPress={handleSubmit}>
                 <Text

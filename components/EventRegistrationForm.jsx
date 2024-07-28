@@ -37,7 +37,7 @@ const EventRegistrationForm = ({navigation, route}) => {
         phoneNummber: values.PhoneNumber,
         userId: userId,
         eventId: eventId,
-        status: 'pending',
+        status: 'Pending',
       });
       Alert.alert('Event Registered Successfully');
     } catch (error) {
@@ -112,7 +112,7 @@ const EventRegistrationForm = ({navigation, route}) => {
               />
             </View>
             <View style={{ width: '89%',justifyContent: 'flex-start',marginTop: 4}}>
-            {errors.email && touched.email && <Text >{errors.email}</Text>}
+            {errors.email && touched.email && <Text style={{color: 'red'}}>{errors.email}</Text>}
             </View>
             
             <View>
@@ -124,7 +124,7 @@ const EventRegistrationForm = ({navigation, route}) => {
               />
             </View>
             <View style={{ width: '89%',justifyContent: 'flex-start',marginTop: 4}}>
-            {errors.PhoneNumber && touched.PhoneNumber && <Text >{errors.PhoneNumber}</Text>}
+            {errors.PhoneNumber && touched.PhoneNumber && <Text style={{color: 'red'}}>{errors.PhoneNumber}</Text>}
             </View>
            
             <View>

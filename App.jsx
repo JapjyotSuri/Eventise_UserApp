@@ -28,11 +28,7 @@ const App = () => {
         const data = await AsyncStorage.getItem('Token');
         console.log(keepLoggedIn)
         const userData=JSON.parse(data)
-        
-          console.log("data is",userData.uid);
-        
-        
-        
+         console.log("data is",userData.uid);
           setUserId(userData.uid)
         if (keepLoggedIn === 'true') {
           setInitialRoute('Home')
@@ -42,7 +38,7 @@ const App = () => {
         }
       }
       catch (error) {
-        console.error('Failed to check login status', error);
+        
         setInitialRoute('Login');
 
       }
@@ -53,7 +49,7 @@ const App = () => {
     checkIfLoggedIn()
   }, [])
   if (loading) {
-    return null; // Or you can show a loading indicator here
+    return null;
   }
   async function LogoutHandle() {
 
@@ -140,53 +136,16 @@ const App = () => {
           })}
         ></Stack.Screen>
         <Stack.Screen name='My Registrations' component={MyProfile}
-          options={({ navigation }) => ({
-            title: 'Your Profile',
-            headerTitleStyle: {
-              color: '#1659ce',
-              fontSize: 20,
-              fontWeight: 'bold'
-            },
-            headerLeft: () => (
-              <AntDesign
-                onPress={() => navigation.navigate('Home')}
-                name="back"
-                size={27}
-                color="#1659ce"
-              />
-            ),
-            headerRight: () => <AntDesign name='logout' style={{ color: 'red', fontSize: 27 }} onPress={async () => {
-              await AsyncStorage.removeItem('KeepLoggedIn');
-              await AsyncStorage.removeItem('Token');
-              await auth().signOut();
-              navigation.navigate('Login');
-              navigation.navigate('Login')
-            }} />
-          })}></Stack.Screen>
+        options={{
+          headerShown: false,
+         }}
+          ></Stack.Screen>
            <Stack.Screen name='Edit Profile' component={EditProfile}
-          options={({ navigation }) => ({
-            title: 'Edit Profile',
-            headerTitleStyle: {
-              color: '#1659ce',
-              fontSize: 20,
-              fontWeight: 'bold'
-            },
-            headerLeft: () => (
-              <AntDesign
-                onPress={() => navigation.navigate('Home')}
-                name="back"
-                size={27}
-                color="#1659ce"
-              />
-            ),
-            headerRight: () => <AntDesign name='logout' style={{ color: 'red', fontSize: 27 }} onPress={async () => {
-              await AsyncStorage.removeItem('KeepLoggedIn');
-              await AsyncStorage.removeItem('Token');
-              await auth().signOut();
-              navigation.navigate('Login');
-              navigation.navigate('Login')
-            }} />
-          })}></Stack.Screen>
+           options={{
+            headerShown: false,
+           }}
+          >
+          </Stack.Screen>
           <Stack.Screen name='Feedback' component={FeedbackPage}
           options={({ navigation }) => ({
             title: 'Write a Feedback',

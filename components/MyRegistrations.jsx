@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import firestore, {onSnapshot} from '@react-native-firebase/firestore';
 import RegisteredTaskInfo from './RegisteredTaskInfo';
 import auth from '@react-native-firebase/auth'
-const MyRegistrations = ({route, navigation,currentUser}) => {
+const MyRegistrations = ({route, navigation}) => {
   const [eventsRegistered, setEventsRegistered] = useState([]);
 //   useEffect(() => { 
 //     console.log("current user is",currentUser)
@@ -59,6 +59,10 @@ useEffect(() => {
         );
     } else {
       setEventsRegistered([]);
+      if (unsubscribe) {//we had to do this because even after a user logs out the above onSnapshot still exixts and tries to access user that is now null and gives an error 
+        //we have to unsubscribe to the above onSnapshot when user is logged out
+        unsubscribe();
+      }
     }
   });
 
@@ -80,14 +84,15 @@ useEffect(() => {
   return (
     <View>
       <View>
-      <View style={{ marginLeft: 15,marginTop: 10,marginBottom: 10}}>
+      <View style={{ marginLeft: 15,marginTop: 20,marginBottom: 10}}>
         <Text style={{ fontSize: 23, fontWeight: 'bold' ,color: '#1659ce',marginTop: 5}}>Your Event Journey</Text>
       </View >
+      <View style={{marginBottom: 20}}>
         <FlatList
           data={eventsRegistered}
           keyExtractor={item => item.registrationId}
           renderItem={({item}) => (
-            <View>
+            <>
               {
                 <RegisteredTaskInfo
                   eventId={item.eventId}
@@ -95,9 +100,10 @@ useEffect(() => {
                   status={item.status}
                 />
               }
-            </View>
+            </>
           )}
         />
+        </View>
       </View>
     </View>
   );

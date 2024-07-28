@@ -16,31 +16,8 @@ const Home = ({ navigation }) => {
   const [RefreshEventList,setRefreshEventList]=useState([]);
   const[nearbyEvents,setNearbyEvents]=useState([]);
   const userLocation={latitude: "12.889910", longitude: "77.613870"}
-  // const [search,setSearch]=useState('');
-  // const [searchList,setSearchList]=useState([]);
-  // const [searching,setSearching]=useState(false);
   const [eventToOpen,setEventToOpen]=useState(null);
   const [isModalVisible,setIsModalVisible]=useState(false);
-  // function handleSearch(){
-  //     if(search===""){
-  //       setSearchList(RefreshEventList);
-  //       setSearching(false);
-  //       setSearching(false);
-  //     }
-  //     else{
-  //       setSearching(true);
-  //       const eventsFiltered=RefreshEventList.filter((event)=>{
-  //         return (
-  //           search &&
-  //           (event.title.includes(search) ||
-  //             event.location.includes(search))
-  //         );
-  
-  //       })
-  //       // setSearchList(eventsFiltered);
-        
-  //     }
-  // }
   function modalStateChange(){
     setIsModalVisible(false);
 }
@@ -93,10 +70,10 @@ const Home = ({ navigation }) => {
           //   console.log(events)
           //   setAllEvents(events);
           // })
-          const userDoc = await firestore().collection('users').doc(user.uid);
+          const userDoc = firestore().collection('users').doc(user.uid);
           userDocUnsubscribe=userDoc.onSnapshot((docSnapshot) => {
-            if (docSnapshot.exists) {
-              const data = docSnapshot._data;
+            if (docSnapshot && docSnapshot.exists) {
+              const data = docSnapshot.data();
               console.log(data);
               setName(data.name);
               setEmail(data.email);
@@ -106,6 +83,10 @@ const Home = ({ navigation }) => {
             else {
               setName(user.displayName || '');
               setEmail(user.email || '');
+              // if (userDocUnsubscribe) {//we had to do this because even after a user logs out the above onSnapshot still exixts and tries to access user that is now null and gives an error 
+              //   //we have to unsubscribe to the above onSnapshot when user is logged out
+              //   userDocUnsubscribe();
+              // }
             }
           })
           

@@ -30,17 +30,18 @@ const EventCreationForm = ({navigation, route}) => {
   function handleGalleyOpen() {
     const options = {
       mediaType: 'photo',
-      includeBase64: false,
+      includeBase64: false,//We dont want to include the base64 representation of the image in the response
       maxHeight: 2000,
       maxWidth: 2000,
     };
 
     launchImageLibrary(options, response => {
-      if (response.didCancel) {
+      if (response.didCancel) {//if the user closes the gallery without selecting an image
         console.log('User cancelled image picker');
       } else if (response.error) {
         console.log('Image picker error: ', response.error);
       } else {
+        console.log('response from launch gallery function',response)
         let imageUri = response.uri || response.assets?.[0]?.uri; //here I have used ?. it is called optional chaining in the case where response is null or undefined it will not throw an error and will give undefined as output
         console.log(imageUri);
         setSelectedImage(imageUri);
@@ -52,16 +53,16 @@ const EventCreationForm = ({navigation, route}) => {
       setUploading(true);
       const uploaduri = selectedImage;
       let filename = uploaduri.substring(uploaduri.lastIndexOf('/') + 1); //we are getting the file name using this as it is at the end after last /
-      //Giving each image a unique file name as one image can be used mpre than once by different users but its name will get overwritten
+      //Giving each image a unique file name as one image can be used more than once by different users but its name will get overwritten
       console.log(filename);
-      const extension = filename.split('.').pop(); //this contains the type of the image like jpg,png,etc
+      const extension = filename.split('.').pop(); //this contains the type of the image like jpg,png,etc which is at the part after dot
       console.log(extension);
       const name = filename.split('.').slice(0, -1).join('.'); //this contains the name of the image
       console.log(name);
-      filename = name + Date.now() + '.' + extension;
+      filename = name + Date.now() + '.' + extension;//Here we are making a name for the file unique as it now contains the current timestamp the image was uploaded
       console.log(filename);
       const task = storage().ref(filename).putFile(uploaduri);
-      task.on('state_changed', taskSnapshot => {
+      task.on('state_changed', taskSnapshot => {//this we have made to show how much percent of the uplaoding is done based on bytes transfered
         console.log(
           `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
         );

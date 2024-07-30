@@ -166,7 +166,7 @@ const Home = ({ navigation }) => {
         }
         keyExtractor={item => item.title}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={loadData}/>
+          <RefreshControl refreshing={refreshing} onRefresh={loadData}/>//here whenever we pull the flatlist down to refresh it calls the loadData function
         }
         
       />

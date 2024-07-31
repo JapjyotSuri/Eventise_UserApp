@@ -1,4 +1,5 @@
 import {
+  Alert,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -18,13 +19,15 @@ const EditProfile = ({navigation, route}) => {
   const {name, email, currentUserUid} = route.params;
   async function updateDetails(values) {
     if (currentUserUid) {
-      console.log('current user is', currentUser.uid);
+      console.log('current user is', currentUserUid);
       try {
         await firestore().collection('users').doc(currentUserUid).update({
           name: values.name,
           email: values.email,
         });
         console.log('successfully updated data');
+        Alert.alert('User data updated')
+        navigation.navigate('Home')
       } catch (error) {
         console.log('error occured', error);
       }

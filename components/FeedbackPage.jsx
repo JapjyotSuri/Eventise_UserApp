@@ -25,6 +25,14 @@ const FeedbackPage = ({route,navigation}) => {
   const [urlOfImage, setUrl] = useState('');
   const [uploaded, setUploaded] = useState(false);
   const {event, currentUserId} = route.params;
+  //setting default values for the airBnbrating to remove warning regarding default props
+  const count = 5
+  const reviews = ['Terrible', 'Bad', 'Okay', 'Good', 'Great']
+  const defaultRating = 0
+  const size=30
+  const showRating=false
+  
+
   async function handleFeedbackSubmit(values) {
     if (currentUserId) {
       try {
@@ -77,6 +85,7 @@ const FeedbackPage = ({route,navigation}) => {
       const extension = filename.split('.').pop(); //this contains the type of the image like jpg,png,etc
       // console.log(extension);
       const name = filename.split('.').slice(0, -1).join('.'); //this contains the name of the image
+      //slice(0,-1) while exclude the last element from the above array formed by split
       // console.log(name);
       filename = name + Date.now() + '.' + extension;
       // console.log(filename);
@@ -138,11 +147,11 @@ const FeedbackPage = ({route,navigation}) => {
                 </View>
                 <View style={{marginTop: 3}}>
                   <AirbnbRating
-                    count={5}
-                    reviews={['Terrible', 'Bad', 'Okay', 'Good', 'Great']}
-                    defaultRating={0}
-                    size={30}
-                    showRating={false}
+                    count={count}
+                    reviews={reviews}
+                    defaultRating={defaultRating}
+                    size={size}
+                    showRating={showRating}
                     onFinishRating={rating => setFieldValue('rating', rating)}
                   />
                 </View>

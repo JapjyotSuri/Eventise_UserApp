@@ -159,7 +159,7 @@ const Home = ({ navigation }) => {
       <FlatList
         data={RefreshEventList}
         renderItem={ ({item}) => (
-          <View style={{}} showsButtons={true}>{    
+          <View style={{}}>{    
               <EventCard event={item} navigation={navigation}/>    
           }</View>
         )

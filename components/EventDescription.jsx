@@ -41,6 +41,7 @@ const EventDescription = ({event, modalStateChange, navigation}) => {
   }
 
   useEffect(() => {
+    //Logic to see if the user has already registered for the event or not
     const unsubscribe = auth().onAuthStateChanged(async user => {
       if (user) {
         setCurrentUserId(user.uid);

@@ -26,6 +26,8 @@
   </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>We need your location to provide relevant data.</string>
 	<key>CFBundleDisplayName</key>
 	<string>eventmanagementapp</string>
 	<key>CFBundleExecutable</key>

@@ -7,6 +7,7 @@ import { getDistance } from 'geolib';
 import EventDescription from './EventDescription'
 import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import Geolocation from 'react-native-geolocation-service';
 const Home = ({ navigation }) => {
   const [refreshing,SetRefreshing]=useState(false);
   const [name, setName] = useState('');
@@ -15,9 +16,32 @@ const Home = ({ navigation }) => {
   const [userInfo, SetUserInfo] = useState('');
   const [RefreshEventList,setRefreshEventList]=useState([]);
   const[nearbyEvents,setNearbyEvents]=useState([]);
+  
   const userLocation={latitude: "12.889910", longitude: "77.613870"}
+  const [currentLocation,setCurrentLoaction]=useState(userLocation)
   const [eventToOpen,setEventToOpen]=useState(null);
   const [isModalVisible,setIsModalVisible]=useState(false);
+  
+  useEffect(() => {
+    Geolocation.requestAuthorization('whenInUse');
+    Geolocation.getCurrentPosition(
+      (position) => {
+        console.log('current position is',position.coords)
+        const location={latitude: position.coords.latitude, longitude: position.coords.longitude}
+        console.log('Latest location is from geolocation services',location)
+        setCurrentLoaction(location)
+      },
+      (error) => {
+        console.log('error is',error);
+      },
+      {
+        enableHighAccuracy: true, // This selects the most accurate location service avalable like GPS
+        timeout: 15000, // Max amount of time the device should wait to get the location
+        maximumAge: 10000, // Caching the result for 10 seconds
+      }
+    )
+  },[])
+
   function modalStateChange(){
     setIsModalVisible(false);
 }
@@ -36,8 +60,8 @@ const Home = ({ navigation }) => {
       setRefreshEventList(eventsList);
       console.log(eventsList)
       const nearby=[...eventsList].sort((a,b)=>{//here we had to use the spread operator(...)as if we sorted dont write it the eventsList also changes as it is called by refrence hence changing the refreshEventList as well
-        const distanceA = getDistance(userLocation, { latitude: a.preciseLoaction.lat, longitude: a.preciseLoaction.lon });
-        const distanceB = getDistance(userLocation, { latitude: b.preciseLoaction.lat, longitude: b.preciseLoaction.lon  });
+        const distanceA = getDistance(currentLocation, { latitude: a.preciseLoaction.lat, longitude: a.preciseLoaction.lon });
+        const distanceB = getDistance(currentLocation, { latitude: b.preciseLoaction.lat, longitude: b.preciseLoaction.lon  });
         return distanceA - distanceB;
       });
       setNearbyEvents(nearby);

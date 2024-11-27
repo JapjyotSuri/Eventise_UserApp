@@ -51,6 +51,7 @@ const EventRegistrationForm = ({navigation, route}) => {
         .where('title', '==', event.title)
         .get();
       if (!eventQuery.empty) {
+        console.log('event query is', eventQuery)
         const docEvent = eventQuery.docs[0];
         console.log(docEvent.id);
         setEventId(docEvent.id);
